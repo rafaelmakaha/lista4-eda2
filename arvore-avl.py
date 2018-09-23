@@ -1,6 +1,6 @@
 ### Arvore AVL
 
-from random import sample
+from random import sample, choice
 
 ### Classe nó
 class Node(object):
@@ -16,13 +16,12 @@ class Arvore(object):
 
     # Faz a inserção de um novo valor
     def insere(self, raiz, key):
-        
         # Caso seja raíz
-        if not raiz:
+        if raiz == None:
             return Node(key)
         elif key < raiz.valor:
             raiz.esq = self.insere(raiz.esq, key)
-        elif key > raiz.valor:
+        else:
             raiz.dire = self.insere(raiz.dire, key)
         
         # Atualiza a altura da raíz
@@ -37,9 +36,11 @@ class Arvore(object):
         if fb < -1 and key > raiz.dire.valor:
             return self.rotEsq(raiz)
         if fb > 1 and key > raiz.esq.valor:
+            print("Entrei aqui: " + str(raiz.valor))
             raiz.esq = self.rotEsq(raiz.esq)
             return self.rotDir(raiz)
         if fb < -1 and key < raiz.dire.valor:
+            print("Entrei aqui: " + str(raiz.valor))
             raiz.dire = self.rotDir(raiz.dire)
             return self.rotEsq(raiz)
 
@@ -48,11 +49,14 @@ class Arvore(object):
     # Faz a remoção de um valor específico
     def delete(self, raiz, key):
         
-        if not raiz:
+        if raiz == None:
+            print("raiz nula")
             return raiz
         elif key < raiz.valor:
+            print("raiz: " + str(raiz.valor) + " " + str(key))
             raiz.esq = self.delete(raiz.esq, key)
         elif key > raiz.valor:
+            print("raiz: " + str(raiz.valor) + " " + str(key))
             raiz.dire = self.delete(raiz.dire, key)
         else:
             if raiz.esq is None:
@@ -63,59 +67,74 @@ class Arvore(object):
                 aux = raiz.esq
                 raiz = None
                 return aux
-
+            
             aux = self.getMenorValor(raiz.dire)
             raiz.valor = aux.valor
             raiz.dire = self.delete(raiz.dire, aux.valor)
 
-    def rotEsq(self, a):
+        if raiz == None:
+            return raiz
+        
+        raiz.altura = 1 + max(self.getAltura(raiz.esq), self.getAltura(raiz.dire))
 
-        aux = a
+        fb = self.getFatorBalanceamento(raiz)
+
+        if fb > 1 and self.getFatorBalanceamento(raiz.esq) >= 0:
+            return self.rotDir(raiz)
+        if fb < -1 and self.getFatorBalanceamento(raiz.dire) <= 0:
+            return self.rotEsq(raiz)
+        if fb > 1 and self.getFatorBalanceamento(raiz.esq) < 0:
+            raiz.esq = self.rotEsq(raiz.esq)
+            return self.rotDir(raiz)
+        if fb < -1 and self.getFatorBalanceamento(raiz.dire) > 0:
+            raiz.dire = self.rotDir(raiz.dire)
+            return self.rotEsq(raiz)
+
+        return raiz
+
+    def rotEsq(self, a):
         b = a.dire
         c = b.esq
 
-        a = b
-        a.esq = aux
-        aux.dire = c
-
+        b.esq = a
+        a.dire = c
+        
         a.altura = 1 + max(self.getAltura(a.esq), self.getAltura(a.dire))
         b.altura = 1 + max(self.getAltura(b.esq), self.getAltura(b.dire))
 
-        return a
+        return b
 
     def rotDir(self, a):
         
-        aux = a
         b = a.esq
         c = b.dire
 
-        a = b
-        a.dire = aux
-        aux.esq = c
-
+        b.dire = a
+        a.esq = c
+        
         a.altura = 1 + max(self.getAltura(a.esq), self.getAltura(a.dire))
         b.altura = 1 + max(self.getAltura(b.esq), self.getAltura(b.dire))
 
-        return a
+        return b
 
     def getAltura(self, raiz):
 
-        if not raiz:
+        if raiz == None:
             return 0
         else:
             return raiz.altura    
     
     def getFatorBalanceamento(self, raiz):
-        if not raiz:
+        if raiz == None:
             return 0
         else:
             return self.getAltura(raiz.esq) - self.getAltura(raiz.dire)
     
     def getMenorValor(self, raiz):
-        if raiz is None or raiz.left is None:
+        if raiz is None or raiz.esq is None:
             return raiz
         else:
-            self.getMenorValor(raiz.left)
+            self.getMenorValor(raiz.esq)
     
     def inOrder(self, raiz):
         if raiz == None:
@@ -131,12 +150,34 @@ avl = Arvore()
 raiz = None
 
 # Cria lista aleatória
-lista = sample(range(10), 10)
+#lista = sample(range(10), 10)
+lista = [6, 8, 0, 7, 9, 1, 3, 4, 2, 5]
 print("Amostra inicial: " + str(lista))
 
 for i in lista:
+    print("Insere:" + str(i))
     raiz = avl.insere(raiz, i)
+    print(str(raiz.valor))
 
-print("Impressão in Order: ")
-avl.inOrder(raiz)
-print()
+    print("Impressão in Order: ")
+    avl.inOrder(raiz)
+    print("\n")
+    
+# Seleção de amostras para remoção
+delete_lista = []
+n_delecoes = 3
+# Valores de deleção fixos
+delete_lista = [1, 0, 7]
+# for i in range(n_delecoes):
+#     aux = choice(lista)
+#     delete_lista.append(aux)
+# print(delete_lista)
+
+# Execução da ação de deleção dos valores selecionados
+for i in delete_lista:
+    print("Remove: " + str(i))
+    raiz = avl.delete(raiz, i)
+
+    print("Impressão in Order: ")
+    avl.inOrder(raiz)
+    print("\n")
