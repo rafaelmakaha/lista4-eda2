@@ -1,5 +1,5 @@
 ### Arvore AVL
-
+import time
 from random import sample, choice
 
 ### Classe nó
@@ -152,14 +152,26 @@ raiz = None
 lista = [6, 8, 0, 7, 9, 1, 3, 4, 2, 5]
 print("Amostra inicial: " + str(lista))
 
+avlTime = []
+
 for i in lista:
     print("Insere:" + str(i))
+
+    time1 = time.time()
     raiz = avl.insere(raiz, i)
-    
+
+    time2 = time.time()
+    avlTime.append(str(time2 - time1))
+
     print("Impressão in Order: ")
     avl.inOrder(raiz)
     print("\n")
-    
+
+
+with open("avl_time", "w") as file_object:
+    file_object.writelines("%s\n" % i for i in avlTime)
+file_object.close
+
 # Seleção de amostras para remoção
 delete_lista = []
 n_delecoes = 3

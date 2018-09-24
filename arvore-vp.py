@@ -1,3 +1,5 @@
+import time
+
 BLACK = "BLACK"
 RED = "RED"
 
@@ -152,10 +154,21 @@ raiz = None
 lista = [6, 8, 0, 7, 9, 1, 3, 4, 2, 5]
 print("Amostra Inicial: " + str(lista))
 
+rbTime = []
+
 for i in lista:
     print("Insere:" + str(i))
+
+    time1 = time.time()
     raiz = rb.insert(raiz, i)
+    time2 = time.time()
+
+    rbTime.append(str(time2 - time1))
 
     print("Impressão in Order: ")
     rb.inOrder(raiz)
     print("\n")
+
+with open("rb_time", "w") as file_object:
+    file_object.writelines("%s\n" % i for i in rbTime)
+file_object.close
