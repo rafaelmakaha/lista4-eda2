@@ -53,10 +53,8 @@ class Arvore(object):
             print("raiz nula")
             return raiz
         elif key < raiz.valor:
-            print("raiz: " + str(raiz.valor) + " " + str(key))
             raiz.esq = self.delete(raiz.esq, key)
         elif key > raiz.valor:
-            print("raiz: " + str(raiz.valor) + " " + str(key))
             raiz.dire = self.delete(raiz.dire, key)
         else:
             if raiz.esq is None:
@@ -157,8 +155,7 @@ print("Amostra inicial: " + str(lista))
 for i in lista:
     print("Insere:" + str(i))
     raiz = avl.insere(raiz, i)
-    print(str(raiz.valor))
-
+    
     print("Impressão in Order: ")
     avl.inOrder(raiz)
     print("\n")
