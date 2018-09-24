@@ -1,16 +1,15 @@
 BLACK = "BLACK"
 RED = "RED"
 
-class Node:
+class Node(object):
     def __init__(self, key):
-        self.value = key
+        self.key = key
         self.color = RED
         self.left = None
         self.right = None
         self.parent = None
 
-class arvore:
-    self.root = None
+class Arvore(object):
 
     def insert(self, key):
         
@@ -140,5 +139,26 @@ class arvore:
             sibling.right = node
             node.parent = sibling
 
+        def inOrder(self, raiz):
+            if raiz == None:
+                return
+            else:
+                self.inOrder(raiz.esq)
+                print("{0} ".format(raiz.valor), end="")
+                self.inOrder(raiz.dire)
 
+
+rb = Arvore()
+raiz = None
+
+print("Amostra Inicial: ")
 lista = [6, 8, 0, 7, 9, 1, 3, 4, 2, 5]
+
+for i in lista:
+    print("Insere:" + str(i))
+    raiz = rb.insert(raiz, i)
+    print(str(raiz.valor))
+
+    print("Impressão in Order: ")
+    avl.inOrder(raiz)
+    print("\n")
