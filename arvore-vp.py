@@ -11,19 +11,19 @@ class Node(object):
 
 class Arvore(object):
 
-    def insert(self, key):
+    def insert(self, root, key):
         
         # Cria o novo nó
         node = Node(key)
 
         # Caso seja raiz
-        if self.root == None:
+        if root == None:
             node.color = BLACK
-            self.root = node
-            return
+            root = node
+            return root
         
         # Encontra o pai do nó
-        currentNode = self.root
+        currentNode = root
         while currentNode != None:
             potentialParent = currentNode
             if node.key < currentNode.key:
@@ -39,17 +39,15 @@ class Arvore(object):
             node.parent.left = node
         else:
             node.parent.right = node
-        
-        # Seta os nós filhos do novo como Nil (Testar código sem esta parte)
-        node.left = None
-        node.right = None
 
         # Chama o rebalanceamento da árvore
-        self.fixTree(node)
+        self.fixTree(root, node)
 
-    def fixTree(self, node):
+        return root
 
-        while node.parent.color == RED and node != self.root:
+    def fixTree(self,root, node):
+
+        while Node(node.parent.color) == RED and node != root:
 
             # Caso o pai esteja a esquerda do avô
             if node.parent == node.parent.parent.left:
@@ -66,12 +64,12 @@ class Arvore(object):
                     # Caso 4 - Pai vermelho e tio preto, peso interno
                     if node == node.parent.right:
                         node = node.parent
-                        self.left_rotate(node)
+                        self.left_rotate(root,node)
                     
                     # Caso 5 - Pai vermelho e tio preto, peso externo
                     node.parent.color = BLACK
                     node.parent.parent.color = RED
-                    self.right_rotate(node.parent.parent)
+                    self.right_rotate(root,node.parent.parent)
             
             # Caso o pai esteja a direita do avô
             else:
@@ -88,77 +86,76 @@ class Arvore(object):
                     # Caso 4
                     if node == node.parent.left:
                         node = node.parent
-                        self.right_rotate(node)
+                        self.right_rotate(root,node)
                     
                     # Caso 5
                     node.parent.color = BLACK
                     node.parent.parent.color = BLACK
-                    self.left_rotate(node.parent.parent)
+                    self.left_rotate(root,node.parent.parent)
 
-        self.root.color = BLACK
+        root.color = BLACK
 
-        def left_rotate(self, node):
-            
-            sibling = node.right
-            node.right = sibling.left
-
-            if sibling.left != None:
-                sibling.left.parent = node
-            
-            sibling.parent = node.parent
-            
-            if node.parent == None:
-                self.root = sibling
-            else:
-                if node == node.parent.left:
-                    node.parent.left = sibling
-                else:
-                    node.parent.right = sibling
-
-            sibling.left = node
-            node.parent = sibling
+    def left_rotate(self,root, node):
         
-        def right_rotate(self, node):
-            
-            sibling = node.left
-            node.left = sibling.right
+        sibling = node.right
+        node.right = sibling.left
 
-            if sibling.right != None:
-                sibling.right.parent = node
-            
-            sibling.parent = node.parent
-            
-            if node.parent == None:
-                self.root = sibling
+        if sibling.left != None:
+            sibling.left.parent = node
+        
+        sibling.parent = node.parent
+        
+        if node.parent == None:
+            root = sibling
+        else:
+            if node == node.parent.left:
+                node.parent.left = sibling
             else:
-                if node == node.parent.right:
-                    node.parent.right = sibling
-                else:
-                    node.parent.left = sibling
+                node.parent.right = sibling
 
-            sibling.right = node
-            node.parent = sibling
+        sibling.left = node
+        node.parent = sibling
+    
+    def right_rotate(self,root, node):
+        
+        sibling = node.left
+        node.left = sibling.right
 
-        def inOrder(self, raiz):
-            if raiz == None:
-                return
+        if sibling.right != None:
+            sibling.right.parent = node
+        
+        sibling.parent = node.parent
+        
+        if node.parent == None:
+            root = sibling
+        else:
+            if node == node.parent.right:
+                node.parent.right = sibling
             else:
-                self.inOrder(raiz.esq)
-                print("{0} ".format(raiz.valor), end="")
-                self.inOrder(raiz.dire)
+                node.parent.left = sibling
+
+        sibling.right = node
+        node.parent = sibling
+
+    def inOrder(self, raiz):
+        if raiz == None:
+            return
+        else:
+            self.inOrder(raiz.left)
+            print("{0} ".format(raiz.key), end="")
+            self.inOrder(raiz.right)
 
 
 rb = Arvore()
 raiz = None
 
-print("Amostra Inicial: ")
 lista = [6, 8, 0, 7, 9, 1, 3, 4, 2, 5]
+print("Amostra Inicial: " + str(lista))
 
 for i in lista:
     print("Insere:" + str(i))
     raiz = rb.insert(raiz, i)
-    print(str(raiz.valor))
 
     print("Impressão in Order: ")
-    avl.inOrder(raiz)
+    rb.inOrder(raiz)
     print("\n")
